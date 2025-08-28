@@ -1,20 +1,34 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Algorithm Visualizer
 
-# Run and deploy your AI Studio app
+An interactive web application for visualizing fundamental computer science algorithms.
 
-This contains everything you need to run your app locally.
+## Purpose
 
-View your app in AI Studio: https://ai.studio/apps/drive/1CHlKB3jWkISn87tGB8wSLg_Ivh6AJR04
+This project is an educational tool designed to make learning algorithms easier and more intuitive. By watching algorithms in action, users can gain a deeper understanding of how they work. It's perfect for students, developers, and anyone curious about programming.
 
-## Run Locally
+## Key Features
 
-**Prerequisites:**  Node.js
+*   **Visual Animations:** Watch algorithms sort and search data step-by-step.
+*   **Interactive Controls:** Play, pause, and step through the process at your own pace.
+*   **Adjustable Speed:** Slow down the animation to see every detail or speed it up for a quick overview.
+*   **Customizable Data:** Change the size of the array to see how algorithms perform on different datasets.
+*   **Clear Status Updates:** A message panel explains what the algorithm is doing at each step.
 
+## Implemented Algorithms
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Sorting
+*   Bubble Sort
+*   Quick Sort
+*   Merge Sort
+
+### Searching
+*   Linear Search
+*   Binary Search
+
+## How to Use
+
+1.  Select an algorithm from the sidebar on the left.
+2.  Use the controls at the top to generate a new array, change its size, or adjust the speed.
+3.  Click "Play" to watch the animation or "Next Step" to advance one step at a time.
+
+- Developed as a personal project, this helped me gain better understanding of the working of algorithms
