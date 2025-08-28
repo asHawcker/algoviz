@@ -1,0 +1,5 @@
+{
+  "name": "Algorithm Visualizer",
+  "description": "An interactive web application to visualize various sorting and searching algorithms in action. Select an algorithm from the sidebar to see a step-by-step animation of how it works.",
+  "requestFramePermissions": []
+}
