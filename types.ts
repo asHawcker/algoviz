@@ -1,4 +1,3 @@
-
 export interface Algorithm {
     name: string;
     key: string;
@@ -12,4 +11,5 @@ export interface AlgorithmCategory {
 export interface AlgorithmData {
     SORTING: AlgorithmCategory;
     SEARCHING: AlgorithmCategory;
+    TREES: AlgorithmCategory;
 }

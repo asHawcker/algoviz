@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ALGORITHM_KEYS, ALGORITHMS } from '../constants';
 import BubbleSort from './sorting/BubbleSort';
@@ -6,6 +5,12 @@ import QuickSort from './sorting/QuickSort';
 import MergeSort from './sorting/MergeSort';
 import LinearSearch from './searching/LinearSearch';
 import BinarySearch from './searching/BinarySearch';
+import InorderTraversal from './trees/InorderTraversal';
+import PreorderTraversal from './trees/PreorderTraversal';
+import PostorderTraversal from './trees/PostorderTraversal';
+import Bfs from './trees/Bfs';
+import Dfs from './trees/Dfs';
+
 
 interface AlgorithmVisualizerProps {
   algorithmKey: string;
@@ -34,6 +39,16 @@ const AlgorithmVisualizer: React.FC<AlgorithmVisualizerProps> = ({ algorithmKey 
                 return <LinearSearch />;
             case ALGORITHM_KEYS.BINARY_SEARCH:
                 return <BinarySearch />;
+            case ALGORITHM_KEYS.INORDER_TRAVERSAL:
+                return <InorderTraversal />;
+            case ALGORITHM_KEYS.PREORDER_TRAVERSAL:
+                return <PreorderTraversal />;
+            case ALGORITHM_KEYS.POSTORDER_TRAVERSAL:
+                return <PostorderTraversal />;
+            case ALGORITHM_KEYS.BFS:
+                return <Bfs />;
+            case ALGORITHM_KEYS.DFS:
+                return <Dfs />;
             default:
                 return <div className="text-center text-gray-500">Please select an algorithm.</div>;
         }
