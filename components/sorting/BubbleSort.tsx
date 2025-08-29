@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FiPlay, FiPause, FiSkipForward } from 'react-icons/fi';
+import SortControls from './SortControls';
+import { useSortingTimer } from '../../hooks/useSortingTimer';
 
 const MIN_VALUE = 10;
 const MAX_VALUE = 100;
@@ -71,13 +72,7 @@ const BubbleSort: React.FC = () => {
     }
   }, [array, loopI, loopJ, isSorted]);
 
-  useEffect(() => {
-    let timerId: number | undefined;
-    if (isSorting && !isPaused && !isSorted) {
-      timerId = window.setTimeout(performStep, speed);
-    }
-    return () => clearTimeout(timerId);
-  }, [isSorting, isPaused, isSorted, performStep, speed]);
+  useSortingTimer({ isSorting, isPaused, isFinished: isSorted, speed, performStep });
 
   const handlePlay = () => {
     if (isSorted) {
@@ -104,47 +99,20 @@ const BubbleSort: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Controls */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4 p-2 bg-gray-700 rounded-md flex-wrap">
-        <div className="flex items-center space-x-4">
-          <button onClick={resetArray} className="px-4 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-500 transition-colors">
-            New Array
-          </button>
-        </div>
-        <div className="flex flex-col sm:flex-row items-center gap-4 flex-wrap justify-center">
-            <div className="flex items-center space-x-2">
-                <span className="text-gray-300 text-sm whitespace-nowrap">Array Size</span>
-                <input
-                    type="range"
-                    min="5"
-                    max="40"
-                    value={arraySize}
-                    onChange={(e) => setArraySize(Number(e.target.value))}
-                    disabled={isSorting}
-                    className="w-24 md:w-32 cursor-pointer"
-                />
-                 <span className="text-gray-300 text-sm w-4">{arraySize}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-                <span className="text-gray-300 text-sm">Speed</span>
-                <input
-                type="range"
-                min="10"
-                max="500"
-                step="10"
-                value={510 - speed}
-                onChange={(e) => setSpeed(510 - Number(e.target.value))}
-                disabled={isSorting && !isPaused}
-                className="w-24 md:w-32 cursor-pointer"
-                />
-            </div>
-            <div className="flex items-center space-x-2">
-                <button onClick={handlePlay} disabled={isSorting && !isPaused} title={isSorted ? "Play Again" : "Play"} className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"><FiPlay size={20} /></button>
-                <button onClick={handlePause} disabled={!isSorting || isPaused || isSorted} title="Pause" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"><FiPause size={20} /></button>
-                <button onClick={handleNextStep} disabled={isSorted} title="Next Step" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"><FiSkipForward size={20} /></button>
-            </div>
-        </div>
-      </div>
+      <SortControls
+        isSorting={isSorting}
+        isPaused={isPaused}
+        isFinished={isSorted}
+        arraySize={arraySize}
+        speed={speed}
+        onReset={resetArray}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onNextStep={handleNextStep}
+        onSizeChange={setArraySize}
+        onSpeedChange={setSpeed}
+        maxSize={40}
+      />
       
       {/* Visualization */}
       <div className="flex-grow flex items-end justify-center space-x-1 bg-gray-900 p-4 rounded-md min-h-[400px]">

@@ -1,8 +1,12 @@
 import React from 'react';
 import { ALGORITHM_KEYS, ALGORITHMS } from '../constants';
 import BubbleSort from './sorting/BubbleSort';
+import InsertionSort from './sorting/InsertionSort';
+import SelectionSort from './sorting/SelectionSort';
 import QuickSort from './sorting/QuickSort';
 import MergeSort from './sorting/MergeSort';
+import CountSort from './sorting/CountSort';
+import RadixSort from './sorting/RadixSort';
 import LinearSearch from './searching/LinearSearch';
 import BinarySearch from './searching/BinarySearch';
 import InorderTraversal from './trees/InorderTraversal';
@@ -31,10 +35,18 @@ const AlgorithmVisualizer: React.FC<AlgorithmVisualizerProps> = ({ algorithmKey 
         switch (algorithmKey) {
             case ALGORITHM_KEYS.BUBBLE_SORT:
                 return <BubbleSort />;
+            case ALGORITHM_KEYS.INSERTION_SORT:
+                return <InsertionSort />;
+            case ALGORITHM_KEYS.SELECTION_SORT:
+                return <SelectionSort />;
             case ALGORITHM_KEYS.QUICK_SORT:
                 return <QuickSort />;
             case ALGORITHM_KEYS.MERGE_SORT:
                 return <MergeSort />;
+            case ALGORITHM_KEYS.COUNT_SORT:
+                return <CountSort />;
+            case ALGORITHM_KEYS.RADIX_SORT:
+                return <RadixSort />;
             case ALGORITHM_KEYS.LINEAR_SEARCH:
                 return <LinearSearch />;
             case ALGORITHM_KEYS.BINARY_SEARCH:

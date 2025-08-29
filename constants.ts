@@ -2,8 +2,12 @@ import type { AlgorithmData } from './types';
 
 export const ALGORITHM_KEYS = {
     BUBBLE_SORT: 'BUBBLE_SORT',
+    INSERTION_SORT: 'INSERTION_SORT',
+    SELECTION_SORT: 'SELECTION_SORT',
     QUICK_SORT: 'QUICK_SORT',
     MERGE_SORT: 'MERGE_SORT',
+    COUNT_SORT: 'COUNT_SORT',
+    RADIX_SORT: 'RADIX_SORT',
     LINEAR_SEARCH: 'LINEAR_SEARCH',
     BINARY_SEARCH: 'BINARY_SEARCH',
     INORDER_TRAVERSAL: 'INORDER_TRAVERSAL',
@@ -18,8 +22,12 @@ export const ALGORITHMS: AlgorithmData = {
     name: 'Sorting Algorithms',
     algorithms: {
       [ALGORITHM_KEYS.BUBBLE_SORT]: { name: 'Bubble Sort', key: ALGORITHM_KEYS.BUBBLE_SORT },
+      [ALGORITHM_KEYS.INSERTION_SORT]: { name: 'Insertion Sort', key: ALGORITHM_KEYS.INSERTION_SORT },
+      [ALGORITHM_KEYS.SELECTION_SORT]: { name: 'Selection Sort', key: ALGORITHM_KEYS.SELECTION_SORT },
       [ALGORITHM_KEYS.QUICK_SORT]: { name: 'Quick Sort', key: ALGORITHM_KEYS.QUICK_SORT },
       [ALGORITHM_KEYS.MERGE_SORT]: { name: 'Merge Sort', key: ALGORITHM_KEYS.MERGE_SORT },
+      [ALGORITHM_KEYS.COUNT_SORT]: { name: 'Count Sort', key: ALGORITHM_KEYS.COUNT_SORT },
+      [ALGORITHM_KEYS.RADIX_SORT]: { name: 'Radix Sort', key: ALGORITHM_KEYS.RADIX_SORT },
     }
   },
   SEARCHING: {

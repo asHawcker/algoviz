@@ -26,11 +26,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectAlgorithm, selectedAlgorithm 
 
   return (
     <aside className="w-64 bg-gray-800 p-4 flex-shrink-0 flex flex-col shadow-2xl">
-      <div className="mb-8 text-center">
+      <div className="mb-8 text-center flex-shrink-0">
         <h1 className="text-2xl font-bold text-white tracking-wider">AlgoViz</h1>
         <p className="text-sm text-cyan-400">Visualize Algorithms</p>
       </div>
-      <nav className="flex-grow">
+      <nav className="flex-grow overflow-y-auto">
         {Object.entries(ALGORITHMS).map(([categoryKey, category]) => (
           <div key={categoryKey} className="mb-4">
             <button 
