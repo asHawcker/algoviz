@@ -40,8 +40,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectAlgorithm, selectedAlgorithm 
               <span>{category.name}</span>
               <ChevronDownIcon className={`transition-transform duration-300 ${openCategories.includes(categoryKey) ? 'rotate-180' : ''}`} />
             </button>
-            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openCategories.includes(categoryKey) ? 'max-h-96' : 'max-h-0'}`}>
-              <ul className="pl-4 mt-2 border-l-2 border-gray-600">
+            <div className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${openCategories.includes(categoryKey) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+              <ul className="overflow-hidden pl-4 mt-2 border-l-2 border-gray-600">
                 {Object.values(category.algorithms).map((algo: Algorithm) => (
                   <li key={algo.key}>
                     <button

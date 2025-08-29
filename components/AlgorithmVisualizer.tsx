@@ -5,6 +5,7 @@ import InsertionSort from './sorting/InsertionSort';
 import SelectionSort from './sorting/SelectionSort';
 import QuickSort from './sorting/QuickSort';
 import MergeSort from './sorting/MergeSort';
+import ThreeWayMergeSort from './sorting/ThreeWayMergeSort';
 import HeapSort from './sorting/HeapSort';
 import CountSort from './sorting/CountSort';
 import RadixSort from './sorting/RadixSort';
@@ -44,6 +45,8 @@ const AlgorithmVisualizer: React.FC<AlgorithmVisualizerProps> = ({ algorithmKey 
                 return <QuickSort />;
             case ALGORITHM_KEYS.MERGE_SORT:
                 return <MergeSort />;
+            case ALGORITHM_KEYS.THREE_WAY_MERGE_SORT:
+                return <ThreeWayMergeSort />;
             case ALGORITHM_KEYS.HEAP_SORT:
                 return <HeapSort />;
             case ALGORITHM_KEYS.COUNT_SORT:

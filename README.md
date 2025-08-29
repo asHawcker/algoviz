@@ -20,6 +20,7 @@ This project is an educational tool designed to make learning algorithms easier 
 *   Bubble Sort
 *   Quick Sort
 *   Merge Sort
+*   3-Way Merge Sort
 
 ### Searching
 *   Linear Search
