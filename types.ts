@@ -12,4 +12,6 @@ export interface AlgorithmData {
     SORTING: AlgorithmCategory;
     SEARCHING: AlgorithmCategory;
     TREES: AlgorithmCategory;
+    HEAPS: AlgorithmCategory;
+    GRAPHS: AlgorithmCategory;
 }

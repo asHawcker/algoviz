@@ -16,6 +16,9 @@ import PreorderTraversal from './trees/PreorderTraversal';
 import PostorderTraversal from './trees/PostorderTraversal';
 import Bfs from './trees/Bfs';
 import Dfs from './trees/Dfs';
+import MinHeap from './heaps/MinHeap';
+import MaxHeap from './heaps/MaxHeap';
+import Dijkstra from './graphs/Dijkstra';
 
 
 interface AlgorithmVisualizerProps {
@@ -67,6 +70,12 @@ const AlgorithmVisualizer: React.FC<AlgorithmVisualizerProps> = ({ algorithmKey 
                 return <Bfs />;
             case ALGORITHM_KEYS.DFS:
                 return <Dfs />;
+            case ALGORITHM_KEYS.MIN_HEAP:
+                return <MinHeap />;
+            case ALGORITHM_KEYS.MAX_HEAP:
+                return <MaxHeap />;
+            case ALGORITHM_KEYS.DIJKSTRA:
+                return <Dijkstra />;
             default:
                 return <div className="text-center text-gray-500">Please select an algorithm.</div>;
         }

@@ -17,6 +17,9 @@ export const ALGORITHM_KEYS = {
     POSTORDER_TRAVERSAL: 'POSTORDER_TRAVERSAL',
     BFS: 'BFS',
     DFS: 'DFS',
+    MIN_HEAP: 'MIN_HEAP',
+    MAX_HEAP: 'MAX_HEAP',
+    DIJKSTRA: 'DIJKSTRA',
 };
 
 export const ALGORITHMS: AlgorithmData = {
@@ -50,5 +53,18 @@ export const ALGORITHMS: AlgorithmData = {
         [ALGORITHM_KEYS.BFS]: { name: 'BFS', key: ALGORITHM_KEYS.BFS },
         [ALGORITHM_KEYS.DFS]: { name: 'DFS', key: ALGORITHM_KEYS.DFS },
     }
+  },
+  HEAPS: {
+    name: 'Heaps',
+    algorithms: {
+        [ALGORITHM_KEYS.MIN_HEAP]: { name: 'Min Heap', key: ALGORITHM_KEYS.MIN_HEAP },
+        [ALGORITHM_KEYS.MAX_HEAP]: { name: 'Max Heap', key: ALGORITHM_KEYS.MAX_HEAP },
+    }
+  },
+  GRAPHS: {
+      name: 'Graphs',
+      algorithms: {
+          [ALGORITHM_KEYS.DIJKSTRA]: { name: "Dijkstra's Algorithm", key: ALGORITHM_KEYS.DIJKSTRA },
+      }
   }
 };
