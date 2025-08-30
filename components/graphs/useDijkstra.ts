@@ -1,14 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useSortingTimer } from '../../hooks/useSortingTimer';
+import { calculateFruchtermanReingoldLayout } from './graphLayout';
 
 // --- TYPES ---
-interface GraphNode {
+export interface GraphNode {
     id: string;
     x: number;
     y: number;
     edges: Map<string, number>; // Map<neighborId, weight>
 }
-type Graph = Map<string, GraphNode>;
+export type Graph = Map<string, GraphNode>;
 
 type DijkstraPhase = 'IDLE' | 'DEQUEUE' | 'RELAX_EDGE' | 'FINISHED_NODE' | 'DONE';
 
@@ -27,8 +28,6 @@ interface AnimationState {
 }
 
 // --- CONSTANTS ---
-const NUM_NODES = 10;
-const EXTRA_EDGES = 4;
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
 const DEFAULT_SPEED = 400;
@@ -36,12 +35,12 @@ const DEFAULT_SPEED = 400;
 // --- HELPERS ---
 const generateNodeId = (i: number) => String.fromCharCode(65 + i);
 
-const generateGraph = (): Graph => {
+const generateGraph = (numNodes: number, extraEdges: number): Graph => {
     const graph: Graph = new Map();
     const nodes: GraphNode[] = [];
 
-    // 1. Create nodes with initial positions
-    for (let i = 0; i < NUM_NODES; i++) {
+    // 1. Create nodes with initial random positions
+    for (let i = 0; i < numNodes; i++) {
         const id = generateNodeId(i);
         const node: GraphNode = {
             id,
@@ -52,65 +51,59 @@ const generateGraph = (): Graph => {
         nodes.push(node);
         graph.set(id, node);
     }
-    
-    // 2. Simple force-directed layout for better spacing
-    for (let iter = 0; iter < 30; iter++) {
-        for(let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-                const n1 = nodes[i];
-                const n2 = nodes[j];
-                const dx = n1.x - n2.x;
-                const dy = n1.y - n2.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const idealDist = 150;
-                if (dist < idealDist) {
-                    const force = 0.1 * (idealDist - dist);
-                    n1.x += (dx / dist) * force;
-                    n1.y += (dy / dist) * force;
-                    n2.x -= (dx / dist) * force;
-                    n2.y -= (dy / dist) * force;
-                }
-            }
-        }
-    }
-    // Clamp positions within bounds
-    nodes.forEach(n => {
-        n.x = Math.max(50, Math.min(CANVAS_WIDTH - 50, n.x));
-        n.y = Math.max(50, Math.min(CANVAS_HEIGHT - 50, n.y));
-    });
 
-    // 3. Create a connected graph (spanning tree)
+    if (numNodes <= 1) {
+        return calculateFruchtermanReingoldLayout(graph, { width: CANVAS_WIDTH, height: CANVAS_HEIGHT });
+    }
+
+    // 2. Create a connected graph (spanning tree) to ensure reachability
     const connected = new Set<string>([nodes[0].id]);
     const unconnected = new Set<string>(nodes.slice(1).map(n => n.id));
-    while(unconnected.size > 0) {
-        const uNodeId = Array.from(unconnected)[0];
+    while (unconnected.size > 0) {
+        // Pick a random unconnected node
+        const uNodeId = Array.from(unconnected)[Math.floor(Math.random() * unconnected.size)];
+        // Pick a random connected node
         const vNodeId = Array.from(connected)[Math.floor(Math.random() * connected.size)];
+        
         const weight = Math.floor(Math.random() * 15) + 1;
         graph.get(uNodeId)!.edges.set(vNodeId, weight);
         graph.get(vNodeId)!.edges.set(uNodeId, weight);
+        
         connected.add(uNodeId);
         unconnected.delete(uNodeId);
     }
 
-    // 4. Add some extra edges to create cycles
-    for (let i = 0; i < EXTRA_EDGES; i++) {
+    // 3. Add some extra edges to create cycles
+    const maxPossibleExtraEdges = (numNodes * (numNodes - 1) / 2) - (numNodes - 1);
+    const edgesToAdd = Math.min(extraEdges, maxPossibleExtraEdges);
+
+    for (let i = 0; i < edgesToAdd; i++) {
         let n1, n2;
+        let tries = 0;
         do {
             n1 = nodes[Math.floor(Math.random() * nodes.length)];
             n2 = nodes[Math.floor(Math.random() * nodes.length)];
+            if (++tries > numNodes * 5) break; // Safety break
         } while (n1.id === n2.id || n1.edges.has(n2.id));
-        const weight = Math.floor(Math.random() * 20) + 1;
-        n1.edges.set(n2.id, weight);
-        n2.edges.set(n1.id, weight);
+
+        if (n1.id !== n2.id && !n1.edges.has(n2.id)) {
+            const weight = Math.floor(Math.random() * 20) + 1;
+            n1.edges.set(n2.id, weight);
+            n2.edges.set(n1.id, weight);
+        }
     }
 
-    return graph;
+    // 4. Calculate final node positions using the layout algorithm
+    return calculateFruchtermanReingoldLayout(graph, { width: CANVAS_WIDTH, height: CANVAS_HEIGHT });
 };
 
 
 // --- THE HOOK ---
 const useDijkstra = () => {
-    const [graph, setGraph] = useState<Graph>(() => generateGraph());
+    const [numNodes, setNumNodes] = useState(10);
+    const [numEdges, setNumEdges] = useState(4);
+
+    const [graph, setGraph] = useState<Graph>(() => generateGraph(numNodes, numEdges));
     const [nodesList, setNodesList] = useState<string[]>([]);
     const [startNode, setStartNode] = useState<string | null>(null);
     const [endNode, setEndNode] = useState<string | null>(null);
@@ -154,131 +147,132 @@ const useDijkstra = () => {
     }, [nodesList]);
 
     const reset = useCallback(() => {
-        const newGraph = generateGraph();
+        const newGraph = generateGraph(numNodes, numEdges);
         const newNodeList = Array.from(newGraph.keys()).sort();
         setGraph(newGraph);
         setNodesList(newNodeList);
-        setStartNode(newNodeList[0]);
-        setEndNode(newNodeList[newNodeList.length - 1]);
-    }, []);
+        const newStart = newNodeList[0] || null;
+        const newEnd = newNodeList.length > 1 ? newNodeList[newNodeList.length - 1] : null;
+        setStartNode(newStart);
+        setEndNode(newEnd);
+    }, [numNodes, numEdges]);
 
     useEffect(() => {
         reset();
-    }, []);
+    }, [reset]);
 
     useEffect(() => {
         resetAlgorithmState();
     }, [startNode, endNode, graph, resetAlgorithmState]);
 
     const performStep = useCallback(() => {
-        setAnimation(prev => {
-            const state: AnimationState = {
-                ...prev,
-                distances: new Map(prev.distances),
-                visited: new Set(prev.visited),
-                previous: new Map(prev.previous),
-                priorityQueue: [...prev.priorityQueue],
-                edgeToHighlight: null, // Clear highlight each step
-            };
+        const prev = animation;
+        const state: AnimationState = {
+            ...prev,
+            distances: new Map(prev.distances),
+            visited: new Set(prev.visited),
+            previous: new Map(prev.previous),
+            priorityQueue: [...prev.priorityQueue],
+            edgeToHighlight: null, // Clear highlight each step
+        };
 
-            switch (state.phase) {
-                case 'IDLE':
-                    if (startNode) {
-                        state.phase = 'DEQUEUE';
-                        state.distances.set(startNode, 0);
-                        state.priorityQueue = [[startNode, 0]];
-                        state.statusText = `Ready! Start node ${startNode} has distance 0.`;
-                    }
-                    break;
-
-                case 'DEQUEUE': {
-                    if (state.priorityQueue.length === 0) {
-                        state.phase = 'DONE';
-                        state.statusText = `Finished. ${endNode} is not reachable.`;
-                        setIsFinding(false); setIsFinished(true);
-                        break;
-                    }
-
-                    state.priorityQueue.sort((a, b) => a[1] - b[1]);
-                    const [currentId] = state.priorityQueue.shift()!;
-
-                    if (state.visited.has(currentId)) {
-                        state.statusText = `Node ${currentId} already finalized. Dequeuing next.`;
-                        break; // Stay in DEQUEUE phase
-                    }
-
-                    state.currentNode = currentId;
-
-                    if (currentId === endNode) {
-                        state.statusText = `Reached destination ${endNode}! Reconstructing path.`;
-                        let currentPathNode = endNode;
-                        while (currentPathNode) {
-                            state.path.unshift(currentPathNode);
-                            currentPathNode = state.previous.get(currentPathNode)!;
-                        }
-                        state.phase = 'DONE';
-                        setIsFinding(false); setIsFinished(true);
-                        break;
-                    }
-                    
-                    state.currentNeighbors = Array.from(graph.get(currentId)!.edges.keys());
-                    state.currentNeighborIndex = 0;
-                    state.phase = 'RELAX_EDGE';
-                    state.statusText = `Dequeued ${currentId}. Visiting its neighbors.`;
-                    break;
-                }
-                
-                case 'RELAX_EDGE': {
-                    const node = state.currentNode!;
-                    const neighbors = state.currentNeighbors;
-
-                    if (state.currentNeighborIndex >= neighbors.length) {
-                        state.phase = 'FINISHED_NODE';
-                        break;
-                    }
-
-                    const neighborId = neighbors[state.currentNeighborIndex];
-                    if (!state.visited.has(neighborId)) {
-                        state.edgeToHighlight = [node, neighborId];
-                        const weight = graph.get(node)!.edges.get(neighborId)!;
-                        const currentDist = state.distances.get(node)!;
-                        const newDist = currentDist + weight;
-                        const neighborCurrentDist = state.distances.get(neighborId) ?? Infinity;
-
-                        if (newDist < neighborCurrentDist) {
-                            state.distances.set(neighborId, newDist);
-                            state.previous.set(neighborId, node);
-                            state.priorityQueue = state.priorityQueue.filter(p => p[0] !== neighborId);
-                            state.priorityQueue.push([neighborId, newDist]);
-                            state.statusText = `Shorter path to ${neighborId} found! New distance: ${newDist}.`;
-                        } else {
-                            state.statusText = `Path to ${neighborId} via ${node} (${newDist}) is not shorter.`;
-                        }
-                    }
-
-                    state.currentNeighborIndex++;
-                    if (state.currentNeighborIndex >= neighbors.length) {
-                        state.phase = 'FINISHED_NODE';
-                        state.statusText = `Finished checking neighbors of ${node}.`;
-                    }
-                    break;
-                }
-                
-                case 'FINISHED_NODE':
-                    state.visited.add(state.currentNode!);
-                    state.currentNode = null;
+        switch (state.phase) {
+            case 'IDLE':
+                if (startNode) {
                     state.phase = 'DEQUEUE';
-                    break;
-                
-                case 'DONE':
-                    setIsFinding(false);
-                    setIsFinished(true);
-                    break;
-            }
+                    state.distances.set(startNode, 0);
+                    state.priorityQueue = [[startNode, 0]];
+                    state.statusText = `Ready! Start node ${startNode} has distance 0.`;
+                }
+                break;
 
-            return state;
-        });
-    }, [graph, startNode, endNode]);
+            case 'DEQUEUE': {
+                if (state.priorityQueue.length === 0) {
+                    state.phase = 'DONE';
+                    state.statusText = endNode ? `Finished. ${endNode} is not reachable.` : 'Finished. No path to find.';
+                    setIsFinding(false); setIsFinished(true);
+                    break;
+                }
+
+                state.priorityQueue.sort((a, b) => a[1] - b[1]);
+                const [currentId] = state.priorityQueue.shift()!;
+
+                if (state.visited.has(currentId)) {
+                    state.statusText = `Node ${currentId} already finalized. Dequeuing next.`;
+                    break; // Stay in DEQUEUE phase
+                }
+
+                state.currentNode = currentId;
+
+                if (currentId === endNode) {
+                    state.statusText = `Reached destination ${endNode}! Reconstructing path.`;
+                    let currentPathNode: string | null = endNode;
+                    while (currentPathNode) {
+                        state.path.unshift(currentPathNode);
+                        currentPathNode = state.previous.get(currentPathNode) ?? null;
+                    }
+                    state.phase = 'DONE';
+                    setIsFinding(false); setIsFinished(true);
+                    break;
+                }
+                
+                state.currentNeighbors = Array.from(graph.get(currentId)!.edges.keys());
+                state.currentNeighborIndex = 0;
+                state.phase = 'RELAX_EDGE';
+                state.statusText = `Dequeued ${currentId}. Visiting its neighbors.`;
+                break;
+            }
+            
+            case 'RELAX_EDGE': {
+                const node = state.currentNode!;
+                const neighbors = state.currentNeighbors;
+
+                if (state.currentNeighborIndex >= neighbors.length) {
+                    state.phase = 'FINISHED_NODE';
+                    break;
+                }
+
+                const neighborId = neighbors[state.currentNeighborIndex];
+                if (!state.visited.has(neighborId)) {
+                    state.edgeToHighlight = [node, neighborId];
+                    const weight = graph.get(node)!.edges.get(neighborId)!;
+                    const currentDist = state.distances.get(node)!;
+                    const newDist = currentDist + weight;
+                    const neighborCurrentDist = state.distances.get(neighborId) ?? Infinity;
+
+                    if (newDist < neighborCurrentDist) {
+                        state.distances.set(neighborId, newDist);
+                        state.previous.set(neighborId, node);
+                        state.priorityQueue = state.priorityQueue.filter(p => p[0] !== neighborId);
+                        state.priorityQueue.push([neighborId, newDist]);
+                        state.statusText = `Shorter path to ${neighborId} found! New distance: ${newDist}.`;
+                    } else {
+                        state.statusText = `Path to ${neighborId} via ${node} (${newDist}) is not shorter.`;
+                    }
+                }
+
+                state.currentNeighborIndex++;
+                if (state.currentNeighborIndex >= neighbors.length) {
+                    state.phase = 'FINISHED_NODE';
+                    state.statusText = `Finished checking neighbors of ${node}.`;
+                }
+                break;
+            }
+            
+            case 'FINISHED_NODE':
+                state.visited.add(state.currentNode!);
+                state.currentNode = null;
+                state.phase = 'DEQUEUE';
+                break;
+            
+            case 'DONE':
+                setIsFinding(false);
+                setIsFinished(true);
+                break;
+        }
+
+        setAnimation(state);
+    }, [graph, startNode, endNode, animation, setIsFinding, setIsFinished]);
 
     useSortingTimer({ isSorting: isFinding, isPaused, isFinished, speed, performStep });
 
@@ -318,6 +312,10 @@ const useDijkstra = () => {
         handlePause,
         handleNextStep,
         reset,
+        numNodes,
+        setNumNodes,
+        numEdges,
+        setNumEdges,
     };
 };
 

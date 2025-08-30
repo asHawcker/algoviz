@@ -36,6 +36,10 @@ const Dijkstra: React.FC = () => {
         handlePause,
         handleNextStep,
         reset,
+        numNodes,
+        setNumNodes,
+        numEdges,
+        setNumEdges,
     } = useDijkstra();
 
     const { distances, priorityQueue, currentNode, visited, path, statusText, edgeToHighlight } = animation;
@@ -83,6 +87,10 @@ const Dijkstra: React.FC = () => {
                 onPause={handlePause}
                 onNextStep={handleNextStep}
                 onSpeedChange={setSpeed}
+                numNodes={numNodes}
+                onNumNodesChange={setNumNodes}
+                numEdges={numEdges}
+                onNumEdgesChange={setNumEdges}
             />
 
             <div className="flex-grow flex flex-col lg:flex-row gap-4 min-h-0">
@@ -118,15 +126,35 @@ const Dijkstra: React.FC = () => {
                 {/* Right Panel: Graph Visualization */}
                 <div className="flex-grow flex items-center justify-center bg-gray-900 rounded-md overflow-hidden p-2">
                     <svg width="100%" height="100%" viewBox="0 0 800 600">
+                        <defs>
+                            <filter id="text-bg" x="-0.1" y="-0.1" width="1.2" height="1.2">
+                                <feFlood floodColor="#27272a" result="bg" />
+                                <feMerge>
+                                    <feMergeNode in="bg"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
                         {/* Edges */}
                         {Array.from(graph.entries()).map(([fromId, node]) => 
                             Array.from(node.edges.entries()).map(([toId, weight]) => {
+                                // Only render edge once for undirected graph
+                                if (fromId > toId) return null;
+
                                 const toNode = graph.get(toId)!;
                                 const isPathEdge = getEdgeColor(fromId, toId) !== '#6b7280';
                                 return (
                                     <g key={`edge-${fromId}-${toId}`}>
                                         <line x1={node.x} y1={node.y} x2={toNode.x} y2={toNode.y} stroke={getEdgeColor(fromId, toId)} strokeWidth={isPathEdge ? 4 : 2} className="transition-all duration-300"/>
-                                        <text x={(node.x + toNode.x) / 2} y={(node.y + toNode.y) / 2 - 5} textAnchor="middle" fill={isPathEdge ? "#f0f9ff" : "#d1d5db"} fontSize="12" fontWeight="bold">
+                                        <text 
+                                            x={(node.x + toNode.x) / 2} 
+                                            y={(node.y + toNode.y) / 2 - 5} 
+                                            textAnchor="middle" 
+                                            fill={isPathEdge ? "#f0f9ff" : "#d1d5db"} 
+                                            fontSize="14" 
+                                            fontWeight="bold"
+                                            filter="url(#text-bg)"
+                                        >
                                             {weight}
                                         </text>
                                     </g>
