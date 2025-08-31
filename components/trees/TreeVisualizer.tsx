@@ -1,5 +1,4 @@
 import React from 'react';
-import { FiPlay, FiPause, FiSkipForward } from 'react-icons/fi';
 import type { TreeNode, TreeType, TraversalState } from './useTreeTraversal';
 import { NODE_RADIUS, Y_SPACING, X_SPACING, NULL_CHILD_Y_FACTOR, NULL_CHILD_X_FACTOR } from './useTreeTraversal';
 
@@ -87,9 +86,15 @@ const TreeVisualizer: React.FC<TreeVisualizerProps> = ({
             <input type="range" min="50" max="1000" step="50" value={1050 - speed} onChange={(e) => handleSpeedChange(1050 - Number(e.target.value))} disabled={isTraversing && !isPaused} className="w-24 md:w-32 cursor-pointer"/>
           </div>
           <div className="flex items-center space-x-2">
-            <button onClick={handlePlay} disabled={isTraversing && !isPaused} title={isComplete ? "Run Again" : "Play"} className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"><FiPlay size={20} /></button>
-            <button onClick={handlePause} disabled={!isTraversing || isPaused || isComplete} title="Pause" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"><FiPause size={20} /></button>
-            <button onClick={handleNextStep} disabled={isComplete} title="Next Step" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"><FiSkipForward size={20} /></button>
+            <button onClick={handlePlay} disabled={isTraversing && !isPaused} title={isComplete ? "Run Again" : "Play"} className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            </button>
+            <button onClick={handlePause} disabled={!isTraversing || isPaused || isComplete} title="Pause" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            </button>
+            <button onClick={handleNextStep} disabled={isComplete} title="Next Step" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+            </button>
           </div>
         </div>
       </div>
