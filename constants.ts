@@ -20,6 +20,8 @@ export const ALGORITHM_KEYS = {
     MIN_HEAP: 'MIN_HEAP',
     MAX_HEAP: 'MAX_HEAP',
     DIJKSTRA: 'DIJKSTRA',
+    BELLMAN_FORD: 'BELLMAN_FORD',
+    KRUSKAL: 'KRUSKAL',
 };
 
 export const ALGORITHMS: AlgorithmData = {
@@ -65,6 +67,8 @@ export const ALGORITHMS: AlgorithmData = {
       name: 'Graphs',
       algorithms: {
           [ALGORITHM_KEYS.DIJKSTRA]: { name: "Dijkstra's Algorithm", key: ALGORITHM_KEYS.DIJKSTRA },
+          [ALGORITHM_KEYS.BELLMAN_FORD]: { name: "Bellman-Ford Algorithm", key: ALGORITHM_KEYS.BELLMAN_FORD },
+          [ALGORITHM_KEYS.KRUSKAL]: { name: "Kruskal's Algorithm", key: ALGORITHM_KEYS.KRUSKAL },
       }
   }
 };

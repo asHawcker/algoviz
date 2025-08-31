@@ -19,20 +19,24 @@ interface GraphControlsProps {
     numEdges: number;
     onNumNodesChange: (nodes: number) => void;
     onNumEdgesChange: (edges: number) => void;
+    showStartNodeSelector?: boolean;
+    showEndNodeSelector?: boolean;
 }
 
 const GraphControls: React.FC<GraphControlsProps> = ({
     nodesList, startNode, endNode, isFinding, isPaused, isFinished, speed,
     onStartNodeChange, onEndNodeChange, onNewGraph, onPlay, onPause, onNextStep, onSpeedChange,
-    numNodes, numEdges, onNumNodesChange, onNumEdgesChange
+    numNodes, numEdges, onNumNodesChange, onNumEdgesChange,
+    showStartNodeSelector = true,
+    showEndNodeSelector = true,
 }) => {
     return (
         <div className="flex flex-col items-center justify-between gap-2 mb-4 p-2 bg-gray-700 rounded-md">
             <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                     <button onClick={onNewGraph} disabled={isFinding} className="px-3 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-500 disabled:bg-gray-800 transition-colors">New Graph</button>
-                    <NodeSelector label="Start" value={startNode} nodes={nodesList} onChange={onStartNodeChange} disabled={isFinding}/>
-                    <NodeSelector label="End" value={endNode} nodes={nodesList.filter(n => n !== startNode)} onChange={onEndNodeChange} disabled={isFinding}/>
+                    {showStartNodeSelector && <NodeSelector label="Start" value={startNode} nodes={nodesList} onChange={onStartNodeChange} disabled={isFinding}/>}
+                    {showEndNodeSelector && <NodeSelector label="End" value={endNode} nodes={nodesList.filter(n => n !== startNode)} onChange={onEndNodeChange} disabled={isFinding}/>}
                 </div>
                 <div className="flex items-center gap-4 flex-wrap justify-center">
                     <div className="flex items-center space-x-2">
@@ -40,13 +44,13 @@ const GraphControls: React.FC<GraphControlsProps> = ({
                         <input type="range" min="50" max="1000" step="50" value={1050 - speed} onChange={(e) => onSpeedChange(1050 - Number(e.target.value))} className="w-24 md:w-32 cursor-pointer" />
                     </div>
                     <div className="flex items-center space-x-2">
-                        <button onClick={onPlay} disabled={!startNode || !endNode || (isFinding && !isPaused)} title={isFinished ? "Run Again" : "Play"} className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
+                        <button onClick={onPlay} disabled={isFinding && !isPaused} title={isFinished ? "Run Again" : "Play"} className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                         </button>
                         <button onClick={onPause} disabled={!isFinding || isPaused || isFinished} title="Pause" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
                         </button>
-                        <button onClick={onNextStep} disabled={isFinished || !startNode || !endNode} title="Next Step" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
+                        <button onClick={onNextStep} disabled={isFinished} title="Next Step" className="p-2 rounded-full bg-gray-600 text-white hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
                         </button>
                     </div>

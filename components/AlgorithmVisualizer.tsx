@@ -19,6 +19,8 @@ import Dfs from './trees/Dfs';
 import MinHeap from './heaps/MinHeap';
 import MaxHeap from './heaps/MaxHeap';
 import Dijkstra from './graphs/Dijkstra';
+import BellmanFord from './graphs/BellmanFord';
+import Kruskal from './graphs/Kruskal';
 
 
 interface AlgorithmVisualizerProps {
@@ -76,6 +78,10 @@ const AlgorithmVisualizer: React.FC<AlgorithmVisualizerProps> = ({ algorithmKey 
                 return <MaxHeap />;
             case ALGORITHM_KEYS.DIJKSTRA:
                 return <Dijkstra />;
+            case ALGORITHM_KEYS.BELLMAN_FORD:
+                return <BellmanFord />;
+            case ALGORITHM_KEYS.KRUSKAL:
+                return <Kruskal />;
             default:
                 return <div className="text-center text-gray-500">Please select an algorithm.</div>;
         }
