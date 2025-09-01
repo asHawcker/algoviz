@@ -22,6 +22,7 @@ export const ALGORITHM_KEYS = {
     DIJKSTRA: 'DIJKSTRA',
     BELLMAN_FORD: 'BELLMAN_FORD',
     KRUSKAL: 'KRUSKAL',
+    TOPOLOGICAL_SORT: 'TOPOLOGICAL_SORT',
 };
 
 export const ALGORITHMS: AlgorithmData = {
@@ -69,6 +70,7 @@ export const ALGORITHMS: AlgorithmData = {
           [ALGORITHM_KEYS.DIJKSTRA]: { name: "Dijkstra's Algorithm", key: ALGORITHM_KEYS.DIJKSTRA },
           [ALGORITHM_KEYS.BELLMAN_FORD]: { name: "Bellman-Ford Algorithm", key: ALGORITHM_KEYS.BELLMAN_FORD },
           [ALGORITHM_KEYS.KRUSKAL]: { name: "Kruskal's Algorithm", key: ALGORITHM_KEYS.KRUSKAL },
+          [ALGORITHM_KEYS.TOPOLOGICAL_SORT]: { name: 'Topological Sort', key: ALGORITHM_KEYS.TOPOLOGICAL_SORT },
       }
   }
 };

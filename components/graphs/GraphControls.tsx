@@ -21,6 +21,8 @@ interface GraphControlsProps {
     onNumEdgesChange: (edges: number) => void;
     showStartNodeSelector?: boolean;
     showEndNodeSelector?: boolean;
+    onGenerateCyclicGraph?: () => void;
+    showCyclicGenerator?: boolean;
 }
 
 const GraphControls: React.FC<GraphControlsProps> = ({
@@ -29,12 +31,24 @@ const GraphControls: React.FC<GraphControlsProps> = ({
     numNodes, numEdges, onNumNodesChange, onNumEdgesChange,
     showStartNodeSelector = true,
     showEndNodeSelector = true,
+    onGenerateCyclicGraph,
+    showCyclicGenerator = false,
 }) => {
     return (
         <div className="flex flex-col items-center justify-between gap-2 mb-4 p-2 bg-gray-700 rounded-md">
             <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                     <button onClick={onNewGraph} disabled={isFinding} className="px-3 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-500 disabled:bg-gray-800 transition-colors">New Graph</button>
+                    {showCyclicGenerator && onGenerateCyclicGraph && (
+                        <button 
+                            onClick={onGenerateCyclicGraph} 
+                            disabled={isFinding} 
+                            className="px-3 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-500 disabled:bg-gray-800 transition-colors"
+                            title="Generate a new graph guaranteed to have a cycle"
+                        >
+                            New Cyclic Graph
+                        </button>
+                    )}
                     {showStartNodeSelector && <NodeSelector label="Start" value={startNode} nodes={nodesList} onChange={onStartNodeChange} disabled={isFinding}/>}
                     {showEndNodeSelector && <NodeSelector label="End" value={endNode} nodes={nodesList.filter(n => n !== startNode)} onChange={onEndNodeChange} disabled={isFinding}/>}
                 </div>
