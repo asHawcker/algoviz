@@ -18,13 +18,35 @@ This project is an educational tool designed to make learning algorithms easier 
 
 ### Sorting
 *   Bubble Sort
+*   Insertion Sort
+*   Selection Sort
 *   Quick Sort
 *   Merge Sort
 *   3-Way Merge Sort
+*   Heap Sort
+*   Count Sort
+*   Radix Sort
 
 ### Searching
 *   Linear Search
 *   Binary Search
+
+### Trees
+*   Inorder Traversal
+*   Preorder Traversal
+*   Postorder Traversal
+*   Breadth-First Search (BFS)
+*   Depth-First Search (DFS)
+
+### Heaps
+*   Min Heap
+*   Max Heap
+
+### Graphs
+*   Dijkstra's Algorithm
+*   Bellman-Ford Algorithm
+*   Kruskal's Algorithm
+*   Topological Sort
 
 ## How to Use
 
