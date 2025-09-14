@@ -13,8 +13,8 @@ const LinkedInIcon: React.FC = () => (
 );
 
 const Footer: React.FC = () => (
-    <footer className="bg-gray-800 text-gray-400 p-4 shadow-inner mt-auto flex-shrink-0">
-        <div className="container mx-auto flex flex-col sm:flex-row justify-around items-center text-sm gap-4">
+    <footer className="bg-gray-800 text-gray-400 p-4 shadow-inner mt-auto flex-shrink-0 border-t border-gray-700/50">
+        <div className="w-full flex flex-col sm:flex-row justify-around items-center text-sm gap-4">
             <div className="text-center sm:text-left">
                 <span className="font-bold text-gray-200">AlgoViz</span> © {new Date().getFullYear()} | Created by Anurag
             </div>

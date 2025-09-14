@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { ALGORITHMS } from '../constants';
 import type { Algorithm, AlgorithmCategory } from '../types';
+import Footer from './Footer';
 
 interface SidebarProps {
   onSelectAlgorithm: (key: string) => void;
   selectedAlgorithm: string | null;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const ChevronDownIcon: React.FC<{className?: string}> = ({ className }) => (
@@ -13,7 +16,13 @@ const ChevronDownIcon: React.FC<{className?: string}> = ({ className }) => (
     </svg>
 );
 
-const Sidebar: React.FC<SidebarProps> = ({ onSelectAlgorithm, selectedAlgorithm }) => {
+const CloseIcon: React.FC = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+);
+
+const Sidebar: React.FC<SidebarProps> = ({ onSelectAlgorithm, selectedAlgorithm, isOpen, onClose }) => {
   const [openCategories, setOpenCategories] = useState<string[]>(['SORTING']);
 
   const toggleCategory = (categoryKey: string) => {
@@ -25,12 +34,20 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectAlgorithm, selectedAlgorithm 
   };
 
   return (
-    <aside className="w-64 bg-gray-800 p-4 flex-shrink-0 flex flex-col shadow-2xl">
-      <div className="mb-8 text-center flex-shrink-0">
-        <h1 className="text-2xl font-bold text-white tracking-wider">AlgoViz</h1>
-        <p className="text-sm text-cyan-400">Visualize Algorithms</p>
+    <aside className={`w-64 bg-gray-800 flex flex-col shadow-2xl fixed inset-y-0 left-0 z-30 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex-shrink-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className="p-4 flex-shrink-0">
+        <div className="mb-8 flex items-center justify-between">
+            <div>
+                <h1 className="text-2xl font-bold text-white tracking-wider">AlgoViz</h1>
+                <p className="text-sm text-cyan-400">Visualize Algorithms</p>
+            </div>
+            <button onClick={onClose} className="lg:hidden p-2 rounded-md hover:bg-gray-700" aria-label="Close menu">
+                <CloseIcon />
+            </button>
+        </div>
       </div>
-      <nav className="flex-grow overflow-y-auto">
+      
+      <nav className="flex-grow overflow-y-auto px-4">
         {Object.entries(ALGORITHMS).map(([categoryKey, category]) => (
           <div key={categoryKey} className="mb-4">
             <button 
@@ -61,6 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectAlgorithm, selectedAlgorithm 
           </div>
         ))}
       </nav>
+      <Footer />
     </aside>
   );
 };

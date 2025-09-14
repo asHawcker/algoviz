@@ -2,24 +2,61 @@ import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import AlgorithmVisualizer from './components/AlgorithmVisualizer';
 import { ALGORITHM_KEYS } from './constants';
-import Footer from './components/Footer';
+
+const MenuIcon: React.FC = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+);
+
+const Header: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) => (
+    <header className="lg:hidden flex items-center justify-between p-4 bg-gray-800 text-white shadow-md z-10">
+        <h1 className="text-xl font-bold tracking-wider">AlgoViz</h1>
+        <button onClick={onMenuClick} className="p-2 rounded-md hover:bg-gray-700" aria-label="Open menu">
+            <MenuIcon />
+        </button>
+    </header>
+);
 
 const App: React.FC = () => {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleSelectAlgorithm = (key: string) => {
+    setSelectedAlgorithm(key);
+    setIsSidebarOpen(false); // Close sidebar on selection for mobile
+  };
+
+  const welcomeScreenSelect = (key: string) => {
+    setSelectedAlgorithm(key);
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-gray-100 font-sans">
-      <div className="flex flex-1 min-h-0">
-        <Sidebar onSelectAlgorithm={setSelectedAlgorithm} selectedAlgorithm={selectedAlgorithm} />
+      <Header onMenuClick={() => setIsSidebarOpen(true)} />
+      <div className="flex flex-1 min-h-0 relative">
+        <Sidebar 
+            onSelectAlgorithm={handleSelectAlgorithm} 
+            selectedAlgorithm={selectedAlgorithm}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+        />
         <main className="flex-1 p-6 md:p-10 overflow-auto">
             {selectedAlgorithm ? (
             <AlgorithmVisualizer algorithmKey={selectedAlgorithm} />
             ) : (
-            <WelcomeScreen onSelectBubbleSort={() => setSelectedAlgorithm(ALGORITHM_KEYS.BUBBLE_SORT)} />
+            <WelcomeScreen onSelectBubbleSort={() => welcomeScreenSelect(ALGORITHM_KEYS.BUBBLE_SORT)} />
             )}
         </main>
       </div>
-      <Footer />
+       {/* Overlay for mobile sidebar */}
+      {isSidebarOpen && (
+        <div 
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden fixed inset-0 bg-black/60 z-20"
+            aria-hidden="true"
+        />
+      )}
     </div>
   );
 };
