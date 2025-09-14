@@ -1,22 +1,25 @@
-
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import AlgorithmVisualizer from './components/AlgorithmVisualizer';
 import { ALGORITHM_KEYS } from './constants';
+import Footer from './components/Footer';
 
 const App: React.FC = () => {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string | null>(null);
 
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-100 font-sans">
-      <Sidebar onSelectAlgorithm={setSelectedAlgorithm} selectedAlgorithm={selectedAlgorithm} />
-      <main className="flex-1 p-6 md:p-10 overflow-auto">
-        {selectedAlgorithm ? (
-          <AlgorithmVisualizer algorithmKey={selectedAlgorithm} />
-        ) : (
-          <WelcomeScreen onSelectBubbleSort={() => setSelectedAlgorithm(ALGORITHM_KEYS.BUBBLE_SORT)} />
-        )}
-      </main>
+    <div className="flex flex-col h-screen bg-gray-900 text-gray-100 font-sans">
+      <div className="flex flex-1 min-h-0">
+        <Sidebar onSelectAlgorithm={setSelectedAlgorithm} selectedAlgorithm={selectedAlgorithm} />
+        <main className="flex-1 p-6 md:p-10 overflow-auto">
+            {selectedAlgorithm ? (
+            <AlgorithmVisualizer algorithmKey={selectedAlgorithm} />
+            ) : (
+            <WelcomeScreen onSelectBubbleSort={() => setSelectedAlgorithm(ALGORITHM_KEYS.BUBBLE_SORT)} />
+            )}
+        </main>
+      </div>
+      <Footer />
     </div>
   );
 };
